@@ -1,0 +1,113 @@
+<%
+  const formatPrice = (tier) => new Intl.NumberFormat('es-MX', {
+    style: 'currency',
+    currency: tier.currency || 'MXN',
+    maximumFractionDigits: 0
+  }).format(tier.price_cents / 100)
+
+  const galleryLimit = (tier) => {
+    const gallery = (tier.features || []).find((feature) => feature.code === 'GALLERY')
+    return gallery && gallery.limit_value ? gallery.limit_value : null
+  }
+%>
+
+<section class="page-intro page-intro-plans">
+  <div class="page-intro-orb" aria-hidden="true"></div>
+  <div class="shell page-intro-grid">
+    <div class="reveal">
+      <span class="eyebrow">Planes MiEventoCzC</span>
+      <h1>Elige cuánto quieres vivir dentro de tu invitación.</h1>
+    </div>
+    <p class="reveal">
+      Desde una opción bonita y directa hasta una experiencia completa con invitados, pases, QR y galería colaborativa.
+    </p>
+  </div>
+</section>
+
+<section class="section plans-section">
+  <div class="shell">
+    <% if (!tiers || tiers.length === 0) { %>
+      <div class="empty-state">
+        <span>Planes</span>
+        <h2>Aún estamos configurando los planes.</h2>
+        <p>Vuelve pronto para conocer las opciones disponibles.</p>
+      </div>
+    <% } else { %>
+      <div class="plans-grid">
+        <% tiers.forEach((tier, index) => { %>
+          <article class="plan-card <%= tier.highlighted ? 'featured' : '' %> reveal" id="<%= tier.slug %>">
+            <div class="plan-card-top">
+              <div class="plan-card-labels">
+                <span class="plan-number">0<%= index + 1 %></span>
+                <% if (tier.highlighted) { %><span class="plan-badge">Más elegido</span><% } %>
+              </div>
+
+              <h2><%= tier.name %></h2>
+              <p><%= tier.short_description %></p>
+
+              <div class="plan-card-price">
+                <strong><%= formatPrice(tier) %></strong>
+                <span>MXN</span>
+              </div>
+            </div>
+
+            <div class="plan-quick-facts">
+              <% if (galleryLimit(tier)) { %>
+                <span><strong><%= galleryLimit(tier) %></strong> fotos en galería</span>
+              <% } %>
+              <span><strong><%= tier.correction_rounds %></strong> rondas de cambios</span>
+            </div>
+
+            <div class="plan-feature-list">
+              <% (tier.features || []).slice(0, 7).forEach((feature) => { %>
+                <div class="plan-feature">
+                  <span class="feature-check" aria-hidden="true">✓</span>
+                  <span>
+                    <%= feature.name %>
+                    <% if (feature.limit_value !== null && feature.limit_value !== undefined) { %>
+                      <small>hasta <%= feature.limit_value %></small>
+                    <% } %>
+                  </span>
+                </div>
+              <% }) %>
+            </div>
+
+            <% if (tier.features && tier.features.length > 7) { %>
+              <details class="plan-details">
+                <summary>Ver <%= tier.features.length - 7 %> funciones más</summary>
+                <div class="plan-details-list">
+                  <% tier.features.slice(7).forEach((feature) => { %>
+                    <span>✓ <%= feature.name %><% if (feature.limit_value !== null && feature.limit_value !== undefined) { %> · <%= feature.limit_value %><% } %></span>
+                  <% }) %>
+                </div>
+              </details>
+            <% } %>
+
+            <a class="button <%= tier.highlighted ? 'button-primary' : 'button-soft' %> plan-card-action" href="#contacto">
+              Elegir <%= tier.name.replace('Invitación ', '') %> <span aria-hidden="true">→</span>
+            </a>
+          </article>
+        <% }) %>
+      </div>
+
+      <div class="plan-note reveal">
+        <span class="plan-note-icon">✦</span>
+        <div>
+          <strong>¿No sabes cuál elegir?</strong>
+          <p>Empieza por el resultado que quieres. Nosotros te ayudamos a elegir el nivel que realmente necesitas.</p>
+        </div>
+        <a href="#contacto">Quiero orientación →</a>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<section class="plan-contact" id="contacto">
+  <div class="shell plan-contact-inner reveal">
+    <div>
+      <span class="eyebrow eyebrow-light">Hablemos de tu evento</span>
+      <h2>Cuéntanos qué tienes en mente y te ayudamos a darle forma.</h2>
+    </div>
+    <a class="button button-light" href="#">Contactar por WhatsApp <span aria-hidden="true">→</span></a>
+  </div>
+</section>

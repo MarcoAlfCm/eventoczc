@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title><%= shareMeta.title %> | MiEventoCzC</title>
+  <meta name="description" content="<%= shareMeta.description %>">
+
+  <meta property="og:locale" content="es_MX">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MiEventoCzC">
+  <meta property="og:title" content="<%= shareMeta.title %>">
+  <meta property="og:description" content="<%= shareMeta.description %>">
+  <meta property="og:url" content="<%= shareMeta.shareUrl %>">
+  <meta property="og:image" content="<%= shareMeta.imageUrl %>">
+  <meta property="og:image:url" content="<%= shareMeta.imageUrl %>">
+  <meta property="og:image:secure_url" content="<%= shareMeta.imageUrl %>">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="<%= shareMeta.title %>">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="<%= shareMeta.title %>">
+  <meta name="twitter:description" content="<%= shareMeta.description %>">
+  <meta name="twitter:image" content="<%= shareMeta.imageUrl %>">
+
+  <link rel="canonical" href="<%= shareMeta.shareUrl %>">
+
+  <style>
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      box-sizing: border-box;
+      color: #332a25;
+      background: #fffaf7;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    .share-opening {
+      width: min(100%, 360px);
+    }
+
+    .share-opening strong {
+      display: block;
+      margin-bottom: 8px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 25px;
+      font-weight: 600;
+    }
+
+    .share-opening p {
+      margin: 0 0 18px;
+      color: #83766d;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .share-opening a {
+      color: #9d6c76;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <main class="share-opening">
+    <strong><%= shareMeta.title %></strong>
+    <p>Abriendo tu invitación...</p>
+    <a href="<%= shareMeta.invitationUrl %>">Ver invitación</a>
+  </main>
+
+  <script>
+    window.location.replace(<%- JSON.stringify(shareMeta.invitationUrl) %>)
+  </script>
+</body>
+</html>

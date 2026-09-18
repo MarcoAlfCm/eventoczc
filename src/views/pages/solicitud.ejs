@@ -1,0 +1,182 @@
+<section class="request-hero">
+  <div class="shell request-shell">
+    <div class="request-heading reveal">
+      <span class="eyebrow">Comencemos</span>
+      <h1>Cuéntanos un poco sobre tu evento.</h1>
+      <p>No necesitas tener todo decidido. Con estos primeros datos podemos preparar una propuesta y continuar contigo después.</p>
+    </div>
+
+    <div class="request-layout">
+      <aside class="request-progress reveal" aria-label="Progreso de solicitud">
+        <div class="request-progress-line"><span data-request-progress-line></span></div>
+        <% ['Evento', 'Plan', 'Diseño', 'Tus datos', 'Revisar'].forEach((label, index) => { %>
+          <button type="button" class="request-progress-step <%= index === 0 ? 'is-active' : '' %>" data-request-progress-step="<%= index %>">
+            <span><%= index + 1 %></span>
+            <strong><%= label %></strong>
+          </button>
+        <% }) %>
+      </aside>
+
+      <form class="request-card reveal" method="post" action="/solicitud" data-request-form novalidate>
+        <% if (Object.keys(errors).length) { %>
+          <div class="request-alert" role="alert">
+            Revisa los campos marcados para poder enviar tu solicitud.
+          </div>
+        <% } %>
+
+        <section class="request-step is-active" data-request-step="0">
+          <div class="request-step-heading">
+            <span>Paso 1 de 5</span>
+            <h2>¿Qué estás celebrando?</h2>
+            <p>Selecciona el tipo de evento y la fecha que tienes contemplada.</p>
+          </div>
+
+          <div class="request-choice-grid request-choice-grid-events">
+            <% [
+              ['XV', 'Mis XV años', '✦'],
+              ['BODA', 'Boda', '♡'],
+              ['CUMPLE', 'Cumpleaños', '◌'],
+              ['OTRO', 'Otro evento', '＋']
+            ].forEach(([value, label, mark]) => { %>
+              <label class="request-choice <%= formData.event_type === value ? 'is-selected' : '' %>">
+                <input type="radio" name="event_type" value="<%= value %>" <%= formData.event_type === value ? 'checked' : '' %>>
+                <span class="request-choice-mark"><%= mark %></span>
+                <strong><%= label %></strong>
+              </label>
+            <% }) %>
+          </div>
+          <% if (errors.event_type) { %><p class="field-error"><%= errors.event_type %></p><% } %>
+
+          <label class="field-block">
+            <span>Fecha del evento</span>
+            <input type="date" name="desired_date" min="<%= minDate %>" value="<%= formData.desired_date %>" required>
+            <small>Más adelante integraremos disponibilidad en tiempo real sobre este calendario.</small>
+          </label>
+          <% if (errors.desired_date) { %><p class="field-error"><%= errors.desired_date %></p><% } %>
+        </section>
+
+        <section class="request-step" data-request-step="1">
+          <div class="request-step-heading">
+            <span>Paso 2 de 5</span>
+            <h2>Elige cómo quieres vivir tu invitación.</h2>
+            <p>Puedes cambiar de plan antes de confirmar la contratación.</p>
+          </div>
+
+          <div class="request-tier-grid">
+            <% tiers.forEach((tier) => { %>
+              <label class="request-tier <%= String(formData.tier_id) === String(tier.id) ? 'is-selected' : '' %> <%= tier.highlighted ? 'is-highlighted' : '' %>">
+                <input type="radio" name="tier_id" value="<%= tier.id %>" data-tier-name="<%= tier.name %>" data-tier-price="<%= (tier.price_cents / 100).toLocaleString('es-MX') %>" <%= String(formData.tier_id) === String(tier.id) ? 'checked' : '' %>>
+                <% if (tier.highlighted) { %><span class="request-tier-badge">Más elegido</span><% } %>
+                <strong><%= tier.name %></strong>
+                <span class="request-tier-price">$<%= (tier.price_cents / 100).toLocaleString('es-MX') %> <small><%= tier.currency %></small></span>
+                <p><%= tier.short_description || '' %></p>
+              </label>
+            <% }) %>
+          </div>
+          <% if (errors.tier_id) { %><p class="field-error"><%= errors.tier_id %></p><% } %>
+        </section>
+
+        <section class="request-step" data-request-step="2">
+          <div class="request-step-heading">
+            <span>Paso 3 de 5</span>
+            <h2>¿Ya tienes un diseño en mente?</h2>
+            <p>Selecciona uno si ya lo viste. También puedes dejar que lo decidamos contigo después.</p>
+          </div>
+
+          <div class="request-template-grid">
+            <label class="request-template request-template-later <%= !formData.template_id ? 'is-selected' : '' %>">
+              <input type="radio" name="template_id" value="" data-template-name="Aún no lo sé" <%= !formData.template_id ? 'checked' : '' %>>
+              <span class="request-template-empty">✦</span>
+              <strong>Aún no lo sé</strong>
+              <p>Podemos ayudarte a elegir después.</p>
+            </label>
+
+            <% templates.forEach((template) => { %>
+              <label class="request-template <%= String(formData.template_id) === String(template.id) ? 'is-selected' : '' %>" data-template-tier-ids="<%= template.tierIds.join(',') %>">
+                <input type="radio" name="template_id" value="<%= template.id %>" data-template-name="<%= template.name %>" <%= String(formData.template_id) === String(template.id) ? 'checked' : '' %>>
+                <div class="request-template-preview">
+                  <% if (template.preview_image) { %>
+                    <img src="<%= template.preview_image %>" alt="Vista previa de <%= template.name %>">
+                  <% } else { %>
+                    <span><%= template.name.charAt(0) %></span>
+                  <% } %>
+                </div>
+                <strong><%= template.name %></strong>
+                <p><%= template.description || 'Diseño disponible para personalizar.' %></p>
+              </label>
+            <% }) %>
+          </div>
+          <% if (errors.template_id) { %><p class="field-error"><%= errors.template_id %></p><% } %>
+        </section>
+
+        <section class="request-step" data-request-step="3">
+          <div class="request-step-heading">
+            <span>Paso 4 de 5</span>
+            <h2>Ahora sí, ¿con quién hablamos?</h2>
+            <p>Solo pedimos los datos necesarios para continuar contigo.</p>
+          </div>
+
+          <div class="field-grid">
+            <label class="field-block">
+              <span>Nombre de contacto</span>
+              <input type="text" name="name" maxlength="150" autocomplete="name" value="<%= formData.name %>" placeholder="Ej. María Rodríguez" required>
+              <% if (errors.name) { %><small class="field-error"><%= errors.name %></small><% } %>
+            </label>
+
+            <label class="field-block">
+              <span>Nombre de la festejada o festejado</span>
+              <input type="text" name="celebrant_name" maxlength="150" value="<%= formData.celebrant_name %>" placeholder="Ej. Valentina" required>
+              <% if (errors.celebrant_name) { %><small class="field-error"><%= errors.celebrant_name %></small><% } %>
+            </label>
+
+            <label class="field-block">
+              <span>WhatsApp</span>
+              <input type="tel" name="phone" maxlength="50" autocomplete="tel" value="<%= formData.phone %>" placeholder="442 000 0000" required>
+              <% if (errors.phone) { %><small class="field-error"><%= errors.phone %></small><% } %>
+            </label>
+
+            <label class="field-block">
+              <span>Correo <em>opcional</em></span>
+              <input type="email" name="email" maxlength="190" autocomplete="email" value="<%= formData.email %>" placeholder="correo@ejemplo.com">
+              <% if (errors.email) { %><small class="field-error"><%= errors.email %></small><% } %>
+            </label>
+          </div>
+
+          <label class="field-block">
+            <span>¿Hay algo que quieras contarnos? <em>opcional</em></span>
+            <textarea name="notes" maxlength="2000" rows="4" placeholder="Colores, temática, ideas o cualquier detalle que ya tengas en mente..."><%= formData.notes %></textarea>
+          </label>
+        </section>
+
+        <section class="request-step" data-request-step="4">
+          <div class="request-step-heading">
+            <span>Paso 5 de 5</span>
+            <h2>Revisa tu solicitud.</h2>
+            <p>No estás realizando un pago todavía. Esto inicia el contacto para preparar tu invitación.</p>
+          </div>
+
+          <div class="request-summary">
+            <div><span>Evento</span><strong data-summary-event>—</strong></div>
+            <div><span>Fecha</span><strong data-summary-date>—</strong></div>
+            <div><span>Plan</span><strong data-summary-tier>—</strong></div>
+            <div><span>Diseño</span><strong data-summary-template>—</strong></div>
+            <div><span>Festejada/o</span><strong data-summary-celebrant>—</strong></div>
+            <div><span>Contacto</span><strong data-summary-contact>—</strong></div>
+          </div>
+
+          <label class="request-consent">
+            <input type="checkbox" name="terms" value="1" <%= formData.terms ? 'checked' : '' %>>
+            <span>Autorizo el uso de estos datos únicamente para atender mi solicitud y dar seguimiento al servicio.</span>
+          </label>
+          <% if (errors.terms) { %><p class="field-error"><%= errors.terms %></p><% } %>
+        </section>
+
+        <div class="request-actions">
+          <button type="button" class="button button-ghost request-back" data-request-back hidden>Anterior</button>
+          <button type="button" class="button button-primary request-next" data-request-next>Continuar</button>
+          <button type="submit" class="button button-primary request-submit" data-request-submit hidden>Enviar solicitud</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

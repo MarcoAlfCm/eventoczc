@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="<%= eventTheme?.palette?.paper || '#fbf7f1' %>">
+  <meta name="robots" content="<%= robots || 'noindex,nofollow' %>">
+
+  <title><%= pageTitle || 'Invitación | MiEventoCzC' %></title>
+
+  <% if (socialMeta) { %>
+    <link rel="canonical" href="<%= socialMeta.canonicalUrl %>">
+    <meta name="description" content="<%= socialMeta.description %>">
+
+    <meta property="og:locale" content="es_MX">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="MiEventoCzC">
+    <meta property="og:title" content="<%= socialMeta.title %>">
+    <meta property="og:description" content="<%= socialMeta.description %>">
+    <meta property="og:url" content="<%= socialMeta.canonicalUrl %>">
+    <meta property="og:image" content="<%= socialMeta.imageUrl %>">
+    <meta property="og:image:url" content="<%= socialMeta.imageUrl %>">
+    <meta property="og:image:secure_url" content="<%= socialMeta.imageUrl %>">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="<%= socialMeta.title %>">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<%= socialMeta.title %>">
+    <meta name="twitter:description" content="<%= socialMeta.description %>">
+    <meta name="twitter:image" content="<%= socialMeta.imageUrl %>">
+  <% } %>
+
+  <% if (eventTheme?.fontHref || eventTheme?.heroFontHref) { %>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <% } %>
+
+  <% if (eventTheme?.fontHref) { %>
+    <link href="<%= eventTheme.fontHref %>" rel="stylesheet">
+  <% } %>
+
+  <% if (eventTheme?.heroFontHref && eventTheme.heroFontHref !== eventTheme.fontHref) { %>
+    <link href="<%= eventTheme.heroFontHref %>" rel="stylesheet">
+  <% } %>
+
+  <% if (eventStylesheet) { %>
+    <link rel="stylesheet" href="<%= eventStylesheet %>">
+  <% } %>
+
+  <% if (eventTheme?.cssVariables) { %>
+    <style id="event-theme-vars">
+      :root {
+        <% Object.entries(eventTheme.cssVariables).forEach(([name, value]) => { %>
+          <%= name %>: <%- value %>;
+        <% }) %>
+      }
+    </style>
+  <% } %>
+</head>
+<body class="<%= bodyClass || 'event-page' %> theme-radius-<%= eventTheme?.style?.radius || 'soft' %> theme-buttons-<%= eventTheme?.style?.buttons || 'pill' %> theme-hero-<%= eventTheme?.style?.hero || 'editorial' %>">
+  <%- body %>
+
+  <% if (eventScript) { %>
+    <script src="<%= eventScript %>" defer></script>
+  <% } %>
+</body>
+</html>

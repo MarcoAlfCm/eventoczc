@@ -1,0 +1,71 @@
+<section class="page-intro page-intro-catalog">
+  <div class="page-intro-orb" aria-hidden="true"></div>
+  <div class="shell page-intro-grid">
+    <div class="reveal">
+      <span class="eyebrow">Diseños MiEventoCzC</span>
+      <h1>Elige una base bonita y hazla completamente tuya.</h1>
+    </div>
+    <p class="reveal">
+      Cada machote mantiene una composición cuidada y responsive. Tú personalizas colores, contenido, fotografías y funciones según tu plan.
+    </p>
+  </div>
+</section>
+
+<section class="section catalog-section">
+  <div class="shell">
+    <% if (!templates || templates.length === 0) { %>
+      <div class="catalog-empty reveal">
+        <div class="catalog-empty-visual">
+          <div class="catalog-phone phone-theme-one"><div class="abstract-invite"><span>XV</span><strong>Elegante</strong><small>15 · 08 · 2026</small></div></div>
+          <div class="catalog-phone phone-theme-two"><div class="abstract-invite"><span>XV</span><strong>Romántica</strong><small>15 · 08 · 2026</small></div></div>
+          <div class="catalog-phone phone-theme-three"><div class="abstract-invite"><span>XV</span><strong>Moderna</strong><small>15 · 08 · 2026</small></div></div>
+        </div>
+        <div class="catalog-empty-copy">
+          <span class="eyebrow">Catálogo en preparación</span>
+          <h2>La estructura ya está lista. Ahora vienen los diseños.</h2>
+          <p>Publicaremos aquí cada machote con su vista previa, estilo y planes compatibles.</p>
+          <a class="button button-primary" href="/planes">Mientras tanto, ver planes →</a>
+        </div>
+      </div>
+    <% } else { %>
+      <div class="catalog-grid">
+        <% templates.forEach((template, index) => { %>
+          <article class="catalog-card reveal">
+            <div class="catalog-card-visual theme-<%= (index % 3) + 1 %>">
+              <div class="catalog-device">
+                <% if (template.preview_image) { %>
+                  <img src="<%= template.preview_image %>" alt="Vista previa de <%= template.name %>">
+                <% } else { %>
+                  <div class="abstract-invite"><span>XV</span><strong><%= template.name %></strong><small>Vista previa</small></div>
+                <% } %>
+              </div>
+            </div>
+
+            <div class="catalog-card-copy">
+              <div class="catalog-card-meta">
+                <span><%= template.event_type || 'XV años' %></span>
+                <% if (template.tiers && template.tiers.length > 0) { %>
+                  <span class="catalog-tier"><%= template.tiers[0] %> +</span>
+                <% } %>
+              </div>
+              <h2><%= template.name %></h2>
+              <% if (template.description) { %><p><%= template.description %></p><% } %>
+              <div class="catalog-card-actions">
+                <span class="button button-soft button-disabled" aria-disabled="true">Demo próximamente</span>
+                <a class="catalog-link" href="/planes">Elegir diseño →</a>
+              </div>
+            </div>
+          </article>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<section class="catalog-info-band">
+  <div class="shell catalog-info-grid reveal">
+    <div><span>01</span><strong>Elige la base</strong><small>Encuentra un estilo que conecte contigo.</small></div>
+    <div><span>02</span><strong>Hazlo tuyo</strong><small>Cambia colores, contenido y detalles permitidos.</small></div>
+    <div><span>03</span><strong>Nosotros afinamos</strong><small>Los detalles más específicos los llevamos contigo.</small></div>
+  </div>
+</section>

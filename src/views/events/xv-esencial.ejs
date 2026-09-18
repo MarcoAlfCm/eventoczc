@@ -1,0 +1,377 @@
+<%
+  const eventDateObject = event.event_date ? new Date(event.event_date) : null
+  const eventDateLong = eventDateObject
+    ? eventDateObject.toLocaleDateString('es-MX', {
+        timeZone: 'UTC',
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric'
+      })
+    : ''
+
+  const eventDateCompact = eventDateObject
+    ? [
+        String(eventDateObject.getUTCDate()).padStart(2, '0'),
+        String(eventDateObject.getUTCMonth() + 1).padStart(2, '0'),
+        eventDateObject.getUTCFullYear()
+      ].join(' · ')
+    : ''
+
+  const parents = Array.isArray(family.parents) ? family.parents : []
+  const godparents = Array.isArray(family.godparents) ? family.godparents : []
+  const godparentPairs = []
+
+  for (let index = 0; index < godparents.length; index += 2) {
+    godparentPairs.push(godparents.slice(index, index + 2))
+  }
+
+  const galleryImages = Array.isArray(gallery.images) ? gallery.images : []
+  const heroName = hero.name || event.title
+  const genericHeroName = /^(mis\s*xv(?:\s*años)?|mis\s*15(?:\s*años)?|xv)$/i.test(String(heroName || '').trim())
+  const rsvpCelebrantName = String(rsvp.celebrantName || (genericHeroName ? '' : heroName) || '').trim()
+
+  const musicTrack = typeof music.track === 'string'
+    ? music.track
+    : (music.track && music.track.src ? music.track.src : '')
+  const musicTitle = music.track && typeof music.track === 'object' && music.track.title
+    ? music.track.title
+    : 'Canción de fondo'
+  const musicArtist = music.track && typeof music.track === 'object' && music.track.artist
+    ? music.track.artist
+    : ''
+%>
+
+<!-- Sprite de iconografía lineal: sin dependencias externas. -->
+<svg class="xv-icon-sprite" aria-hidden="true" focusable="false">
+  <symbol id="xv-icon-ceremony" viewBox="0 0 24 24">
+    <path d="M12 2v5M9.5 4.5h5"/>
+    <path d="M6.5 10.5 12 6l5.5 4.5V22h-11z"/>
+    <path d="M10 22v-6h4v6M4 22h16"/>
+  </symbol>
+  <symbol id="xv-icon-reception" viewBox="0 0 24 24">
+    <path d="M4 16h16"/>
+    <path d="M6 16a6 6 0 0 1 12 0"/>
+    <path d="M12 7V5M10 5h4"/>
+    <path d="M3 19h18"/>
+  </symbol>
+  <symbol id="xv-icon-dress" viewBox="0 0 24 24">
+    <path d="M10 3h4l1.2 4.1 3.3 2.9-2.2 11H7.7L5.5 10l3.3-2.9z"/>
+    <path d="M9 7c.7 1 1.7 1.5 3 1.5S14.3 8 15 7"/>
+    <path d="M8.5 15.5h7"/>
+  </symbol>
+  <symbol id="xv-icon-location" viewBox="0 0 24 24">
+    <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/>
+    <circle cx="12" cy="10" r="2.6"/>
+  </symbol>
+  <symbol id="xv-icon-rsvp" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="9"/>
+    <path d="m8.2 12.1 2.4 2.5 5.4-5.5"/>
+  </symbol>
+  <symbol id="xv-icon-music" viewBox="0 0 24 24">
+    <path d="M9 18V6l9-2v12"/>
+    <ellipse cx="6.5" cy="18" rx="2.5" ry="2"/>
+    <ellipse cx="15.5" cy="16" rx="2.5" ry="2"/>
+  </symbol>
+  <symbol id="xv-icon-gallery" viewBox="0 0 24 24">
+    <rect x="3" y="5" width="18" height="14" rx="2"/>
+    <circle cx="9" cy="10" r="1.5"/>
+    <path d="m5 17 4.5-4 3.2 2.7 2.2-2 4.1 3.3"/>
+  </symbol>
+</svg>
+
+<% if (preview) { %>
+  <div class="event-preview-bar">
+    <span>EVENTOCZC</span>
+    <strong><%= event.status %></strong>
+    <% if (event.request_folio) { %><small><%= event.request_folio %></small><% } %>
+  </div>
+
+  <div class="event-preview-watermark" aria-hidden="true">
+    <span>MIEVENTOCZC</span>
+  </div>
+<% } %>
+
+
+<section class="xv-entry-gate" data-entry-gate aria-label="Portada de la invitación">
+  <div class="xv-entry-stage">
+    <span class="xv-entry-kicker"><%= hero.eyebrow || 'Mis XV años' %></span>
+
+    <div class="xv-envelope" data-envelope aria-hidden="true">
+      <div class="xv-envelope-back"></div>
+      <div class="xv-envelope-letter"></div>
+      <div class="xv-envelope-flap"></div>
+      <div class="xv-envelope-fold xv-envelope-fold-left"></div>
+      <div class="xv-envelope-fold xv-envelope-fold-right"></div>
+      <div class="xv-envelope-fold xv-envelope-fold-bottom"></div>
+
+      <button
+        type="button"
+        class="xv-envelope-seal"
+        data-entry-open
+        aria-label="Abrir invitación"
+      >
+        <span>XV</span>
+      </button>
+    </div>
+
+    <% if (eventDateCompact) { %>
+      <time class="xv-entry-date" datetime="<%= event.event_date %>"><%= eventDateCompact %></time>
+    <% } %>
+  </div>
+</section>
+
+<main class="xv-invitation <%= music.enabled && musicTrack ? 'has-music-dock' : '' %>" data-event-date="<%= event.event_date || '' %>">
+  <section class="xv-hero-card <%= hero.image ? 'has-image' : 'no-image' %>">
+    <div class="xv-hero-media">
+      <% if (hero.image) { %>
+        <img src="<%= hero.image %>" alt="Fotografía principal de <%= heroName %>" fetchpriority="high">
+      <% } else { %>
+        <div class="xv-hero-placeholder" aria-hidden="true">
+          <span>✦</span>
+          <small><%= hero.eyebrow || 'Mis XV años' %></small>
+        </div>
+      <% } %>
+
+      <div class="xv-hero-overlay" aria-hidden="true"></div>
+      <span class="xv-hero-badge"><%= hero.eyebrow || 'Mis XV años' %></span>
+    </div>
+
+    <div class="xv-identity">
+      <h1><%= heroName %></h1>
+      <% if (eventDateCompact) { %>
+        <time datetime="<%= event.event_date %>"><%= eventDateCompact %></time>
+      <% } %>
+      <% if (hero.phrase) { %>
+        <p><%= hero.phrase %></p>
+      <% } %>
+    </div>
+  </section>
+
+  <% if (countdown.enabled && event.event_date) { %>
+    <section class="xv-block xv-countdown-block" aria-label="Cuenta regresiva">
+      <p class="xv-block-label">Falta muy poco</p>
+      <div class="xv-countdown" data-countdown>
+        <div><strong data-days>00</strong><span>Días</span></div>
+        <div><strong data-hours>00</strong><span>Horas</span></div>
+        <div><strong data-minutes>00</strong><span>Min</span></div>
+        <div><strong data-seconds>00</strong><span>Seg</span></div>
+      </div>
+    </section>
+  <% } %>
+
+  <% if (family.enabled && (parents.length || godparents.length)) { %>
+    <section class="xv-block xv-family-block">
+      <p class="xv-block-label">Con mucho cariño</p>
+
+      <div class="xv-family-copy">
+        <% if (parents.length) { %>
+          <div class="xv-family-group">
+            <span>Mis padres</span>
+
+            <div class="xv-family-name-list">
+              <% parents.forEach((parent) => { %>
+                <strong class="xv-family-name"><%= parent %></strong>
+              <% }) %>
+            </div>
+          </div>
+        <% } %>
+
+        <% if (godparentPairs.length) { %>
+          <div class="xv-family-group">
+            <span>Mis padrinos</span>
+
+            <div class="xv-family-pair-list">
+              <% godparentPairs.forEach((pair) => { %>
+                <div class="xv-family-pair">
+                  <% pair.forEach((godparent) => { %>
+                    <strong class="xv-family-name"><%= godparent %></strong>
+                  <% }) %>
+                </div>
+              <% }) %>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    </section>
+  <% } %>
+
+  <% if (ceremony.enabled || reception.enabled || dressCode.enabled) { %>
+    <section class="xv-block xv-details-block">
+      <div class="xv-section-heading">
+        <span>Detalles</span>
+        <h2>Todo para acompañarme.</h2>
+      </div>
+
+      <div class="xv-detail-list">
+        <% if (ceremony.enabled) { %>
+          <article class="xv-detail-card">
+            <span class="xv-detail-icon" aria-hidden="true"><span class="xv-zendtry-icon xv-zendtry-icon-building"></span></span>
+            <div class="xv-detail-copy">
+              <span>Ceremonia</span>
+              <strong><%= ceremony.name || 'Lugar por confirmar' %></strong>
+              <small>
+                <%= ceremony.time || '' %><%= ceremony.time && ceremony.address ? ' · ' : '' %><%= ceremony.address || '' %>
+              </small>
+            </div>
+            <% if (ceremony.mapsUrl) { %>
+              <a class="xv-detail-action" href="<%= ceremony.mapsUrl %>" target="_blank" rel="noopener noreferrer" aria-label="Ver ubicación de la ceremonia"><span class="xv-zendtry-icon xv-zendtry-icon-location" aria-hidden="true"></span></a>
+            <% } %>
+          </article>
+        <% } %>
+
+        <% if (reception.enabled) { %>
+          <article class="xv-detail-card">
+            <span class="xv-detail-icon" aria-hidden="true"><span class="xv-zendtry-icon xv-zendtry-icon-reserve"></span></span>
+            <div class="xv-detail-copy">
+              <span>Recepción</span>
+              <strong><%= reception.name || 'Lugar por confirmar' %></strong>
+              <small>
+                <%= reception.time || '' %><%= reception.time && reception.address ? ' · ' : '' %><%= reception.address || '' %>
+              </small>
+            </div>
+            <% if (reception.mapsUrl) { %>
+              <a class="xv-detail-action" href="<%= reception.mapsUrl %>" target="_blank" rel="noopener noreferrer" aria-label="Ver ubicación de la recepción"><span class="xv-zendtry-icon xv-zendtry-icon-location" aria-hidden="true"></span></a>
+            <% } %>
+          </article>
+        <% } %>
+
+        <% if (dressCode.enabled) { %>
+          <article class="xv-detail-card xv-detail-card-static">
+            <span class="xv-detail-icon" aria-hidden="true"><span class="xv-zendtry-icon xv-zendtry-icon-dress-code"></span></span>
+            <div class="xv-detail-copy">
+              <span>Código de vestimenta</span>
+              <strong><%= dressCode.title || 'Formal' %></strong>
+              <% if (dressCode.description) { %><small><%= dressCode.description %></small><% } %>
+            </div>
+          </article>
+        <% } %>
+      </div>
+    </section>
+  <% } %>
+
+  <% if (gallery.enabled) { %>
+    <% const visibleGalleryImages = galleryImages.slice(0, 4) %>
+    <% const galleryPlaceholderCount = Math.max(0, 4 - visibleGalleryImages.length) %>
+    <section class="xv-block xv-gallery-block">
+      <div class="xv-section-heading xv-section-heading-inline">
+        <div>
+          <span class="xv-heading-kicker"><span class="xv-zendtry-icon xv-zendtry-icon-gallery" aria-hidden="true"></span>Galería</span>
+          <h2>Mis momentos favoritos.</h2>
+        </div>
+        <small>4 fotos</small>
+      </div>
+
+      <div class="xv-gallery" data-gallery>
+        <% visibleGalleryImages.forEach((image, index) => { const src = typeof image === 'string' ? image : image.src %>
+          <button class="xv-gallery-item" type="button" data-gallery-src="<%= src %>" aria-label="Abrir fotografía <%= index + 1 %>">
+            <img src="<%= src %>" alt="Fotografía <%= index + 1 %> de <%= heroName %>" loading="lazy">
+          </button>
+        <% }) %>
+
+        <% for (let slot = 0; slot < galleryPlaceholderCount; slot += 1) { %>
+          <div class="xv-gallery-item xv-gallery-placeholder-item" aria-hidden="true">
+            <span class="xv-zendtry-icon xv-zendtry-icon-gallery xv-zendtry-icon-gallery-placeholder"></span>
+          </div>
+        <% } %>
+      </div>
+    </section>
+  <% } %>
+
+  <% if (rsvp.enabled && rsvp.type === 'whatsapp' && rsvp.phone) { %>
+    <section
+      class="xv-block xv-rsvp-block"
+      data-rsvp-whatsapp
+      data-rsvp-phone="<%= String(rsvp.phone).replace(/\D/g, '') %>"
+      data-rsvp-celebrant="<%= rsvpCelebrantName %>"
+      data-rsvp-date="<%= eventDateLong %>"
+    >
+      <div class="xv-rsvp-card">
+        <span class="xv-rsvp-icon" aria-hidden="true"><span class="xv-zendtry-icon xv-zendtry-icon-rsvp"></span></span>
+        <div>
+          <span>Confirmación</span>
+          <strong>¿Nos acompañas?</strong>
+          <small>Escribe tu nombre y confirma por WhatsApp.</small>
+        </div>
+      </div>
+
+      <form class="xv-rsvp-form" data-rsvp-form>
+        <label class="xv-rsvp-field">
+          <span>Tu nombre</span>
+          <input
+            type="text"
+            name="guestName"
+            maxlength="100"
+            autocomplete="name"
+            placeholder="Escribe tu nombre"
+            data-rsvp-name
+            required
+          >
+        </label>
+
+        <p class="xv-rsvp-error" data-rsvp-error hidden>
+          Escribe tu nombre para continuar.
+        </p>
+
+        <button class="xv-primary-button xv-rsvp-submit" type="submit">
+          Confirmar por WhatsApp
+        </button>
+      </form>
+    </section>
+  <% } %>
+
+  <% if (preview) { %>
+    <section class="xv-preview-note">
+      <strong>Vista de trabajo · <%= event.status %></strong>
+      <span>Solo aparecen las secciones que ya tienen información.</span>
+    </section>
+  <% } %>
+
+  <footer class="xv-footer">
+    <span>✦</span>
+    <strong><%= heroName %></strong>
+    <% if (eventDateLong) { %><small><%= eventDateLong %></small><% } %>
+    <p>MiEventoCzC</p>
+  </footer>
+</main>
+
+<% if (music.enabled && musicTrack) { %>
+  <section class="xv-music-dock" data-music-player aria-label="Reproductor de música ambiental">
+    <audio
+      preload="auto"
+      autoplay
+      loop
+      src="<%= musicTrack %>"
+      data-music-audio
+    ></audio>
+
+    <span class="xv-music-icon" aria-hidden="true">
+      <span class="xv-zendtry-icon xv-zendtry-icon-music"></span>
+    </span>
+
+    <div class="xv-music-content">
+      <button
+        class="xv-music-progress"
+        type="button"
+        data-music-progress-track
+        aria-label="Cambiar posición de la canción"
+      >
+        <span data-music-progress></span>
+      </button>
+    </div>
+
+    <button
+      type="button"
+      class="xv-music-toggle"
+      data-music-toggle
+      aria-label="Reproducir música"
+      aria-pressed="false"
+    >
+      <span class="xv-music-toggle-icon xv-zendtry-icon xv-zendtry-icon-play" data-music-toggle-icon aria-hidden="true"></span>
+    </button>
+  </section>
+<% } %>
+
+<div class="xv-lightbox" data-lightbox hidden>
+  <button class="xv-lightbox-close" type="button" data-lightbox-close aria-label="Cerrar fotografía">×</button>
+  <img src="" alt="Fotografía ampliada" data-lightbox-image>
+</div>

@@ -1,0 +1,127 @@
+<%
+  const isPublished = event.status === 'PUBLISHED'
+  const currentSubdomain = event.subdomain || ''
+%>
+
+<main
+  class="publish-page"
+  data-publish-root
+  data-slug="<%= event.slug %>"
+  data-base-domain="<%= baseDomain %>"
+  data-status="<%= event.status %>"
+  data-check-url="/mi-evento/<%= encodeURIComponent(event.slug) %>/publicar/disponibilidad"
+  data-publish-url="/mi-evento/<%= encodeURIComponent(event.slug) %>/publicar"
+>
+  <header class="publish-topbar">
+    <a class="publish-back" href="/mi-evento/<%= encodeURIComponent(event.slug) %>/editar">
+      ← Volver a editar
+    </a>
+
+    <span class="publish-brand">MiEventoCzC</span>
+  </header>
+
+  <section class="publish-shell">
+    <div class="publish-copy">
+      <span class="publish-kicker"><%= isPublished ? 'INVITACIÓN PUBLICADA' : 'ÚLTIMO PASO' %></span>
+      <h1><%= isPublished ? 'Tu invitación está lista ✨' : 'Publica tu invitación' %></h1>
+
+      <% if (!isPublished) { %>
+        <p class="publish-lead">
+          Ya terminaste de personalizarla. Elige la dirección que compartirás con tus invitados.
+        </p>
+
+        <div class="publish-card">
+          <div class="publish-card-heading">
+            <div>
+              <span>Tu dirección</span>
+              <strong>Elige tu subdominio</strong>
+            </div>
+            <span class="publish-tier"><%= event.tier_name %></span>
+          </div>
+
+          <label class="publish-domain-field">
+            <span>Dirección pública</span>
+            <div class="publish-domain-input">
+              <small>https://</small>
+              <input
+                type="text"
+                maxlength="40"
+                value="<%= currentSubdomain %>"
+                placeholder="misxvvaleria"
+                autocapitalize="none"
+                autocomplete="off"
+                spellcheck="false"
+                data-subdomain
+              >
+              <small>.<%= baseDomain %></small>
+            </div>
+          </label>
+
+          <div class="publish-domain-status" data-domain-status>
+            Escribe la dirección que quieres utilizar.
+          </div>
+        </div>
+
+        <div class="publish-lifetime">
+          <div>
+            <span>Vigencia</span>
+            <strong><%= event.tier_name %></strong>
+          </div>
+
+          <p>
+            Tu evento es el <strong><%= eventDateLong || '—' %></strong>.
+            Con este plan la invitación permanecerá activa
+            <strong><%= graceDays %> <%= graceDays === 1 ? 'día' : 'días' %> después del evento</strong>.
+          </p>
+
+          <% if (expiryDateLong) { %>
+            <small>Disponible hasta el <%= expiryDateLong %> a las 23:59.</small>
+          <% } %>
+        </div>
+
+        <button type="button" class="publish-primary" data-publish-button disabled>
+          Publicar invitación
+        </button>
+
+        <p class="publish-message" data-publish-message></p>
+      <% } else { %>
+        <div class="publish-success-card">
+          <span>Tu dirección pública</span>
+          <a href="<%= publicUrl %>" target="_blank" rel="noopener"><%= publicUrl %></a>
+
+          <div class="publish-success-actions">
+            <button type="button" data-copy-url="<%= publicUrl %>">Copiar enlace</button>
+            <a
+              href="https://wa.me/?text=<%= encodeURIComponent(publicUrl) %>"
+              target="_blank"
+              rel="noopener noreferrer"
+            >Compartir por WhatsApp</a>
+          </div>
+
+          <% if (event.expires_at) { %>
+            <small>Activa hasta: <%= expiryDateLong %></small>
+          <% } %>
+        </div>
+      <% } %>
+    </div>
+
+    <aside class="publish-preview">
+      <div class="publish-preview-heading">
+        <span>Así se verá al compartir</span>
+        <strong>Tarjeta social</strong>
+      </div>
+
+      <div class="publish-preview-frame">
+        <img
+          src="<%= publicationPreviewUrl %>?t=<%= Date.now() %>"
+          alt="Vista previa de la tarjeta para compartir"
+        >
+      </div>
+
+      <p>
+        Se genera automáticamente con la fotografía principal,
+        fecha, contenido y colores de tu invitación.
+      </p>
+    </aside>
+  </section>
+</main>

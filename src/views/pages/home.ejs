@@ -1,0 +1,220 @@
+<%
+  const formatPrice = (tier) => new Intl.NumberFormat('es-MX', {
+    style: 'currency',
+    currency: tier.currency || 'MXN',
+    maximumFractionDigits: 0
+  }).format(tier.price_cents / 100)
+%>
+
+<section class="hero-home">
+  <div class="hero-orb hero-orb-one" aria-hidden="true"></div>
+  <div class="hero-orb hero-orb-two" aria-hidden="true"></div>
+
+  <div class="shell hero-grid">
+    <div class="hero-copy reveal">
+      <span class="eyebrow">Invitaciones digitales que se sienten tuyas</span>
+
+      <h1>
+        Haz que tu evento empiece
+        <span>desde la invitación.</span>
+      </h1>
+
+      <p class="hero-lead">
+        Elige un diseño, personalízalo con tu estilo y comparte una experiencia digital con música,
+        ubicaciones, confirmaciones y mucho más.
+      </p>
+
+      <div class="hero-actions">
+        <a class="button button-primary" href="/catalogo">Explorar diseños <span aria-hidden="true">→</span></a>
+        <a class="button button-ghost" href="/planes">Ver planes</a>
+      </div>
+
+      <div class="hero-trust" aria-label="Beneficios">
+        <span><i></i> Personalizable</span>
+        <span><i></i> Fácil de compartir</span>
+        <span><i></i> Pensada para móvil</span>
+      </div>
+    </div>
+
+    <div class="hero-preview reveal" aria-label="Vista previa de una invitación digital">
+      <div class="preview-halo" aria-hidden="true"></div>
+
+      <div class="preview-note preview-note-left">
+        <span>Tu estilo</span>
+        <strong>Colores y detalles</strong>
+      </div>
+
+      <div class="event-phone">
+        <div class="event-phone-top">
+          <span>9:41</span>
+          <span>● ●</span>
+        </div>
+
+        <div class="event-cover">
+          <div class="event-cover-art" aria-hidden="true">
+            <span class="event-cover-circle"></span>
+            <span class="event-cover-flower flower-one"></span>
+            <span class="event-cover-flower flower-two"></span>
+          </div>
+          <small>Mis XV años</small>
+          <strong>Valentina</strong>
+          <span>15 · 08 · 2026</span>
+        </div>
+
+        <div class="countdown-mini">
+          <div><strong>120</strong><span>días</span></div>
+          <div><strong>14</strong><span>horas</span></div>
+          <div><strong>35</strong><span>min</span></div>
+        </div>
+
+        <div class="phone-actions">
+          <span>Ubicación</span>
+          <span>RSVP</span>
+          <span>Música</span>
+        </div>
+
+        <div class="phone-place">
+          <span class="place-icon" aria-hidden="true">⌖</span>
+          <div><small>Recepción</small><strong>Salón Real de Eventos</strong></div>
+          <span aria-hidden="true">→</span>
+        </div>
+      </div>
+
+      <div class="preview-note preview-note-right">
+        <span>Tu evento</span>
+        <strong>Listo para compartir</strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="value-strip" aria-label="Características principales">
+  <div class="shell value-strip-grid">
+    <div><span class="value-icon">✦</span><strong>Tu diseño, a tu estilo</strong><small>Colores, fotografías y detalles personalizados.</small></div>
+    <div><span class="value-icon">◎</span><strong>Todo en un solo enlace</strong><small>Ubicación, música, itinerario y confirmaciones.</small></div>
+    <div><span class="value-icon">↗</span><strong>Comparte en segundos</strong><small>Perfecta para WhatsApp y cualquier dispositivo.</small></div>
+  </div>
+</section>
+
+<section class="section section-how" id="como-funciona">
+  <div class="shell">
+    <div class="section-heading centered reveal">
+      <span class="eyebrow">Así de fácil</span>
+      <h2>Tu invitación lista, sin complicarte.</h2>
+      <p>Nosotros cuidamos la estructura; tú eliges lo que hace único a tu evento.</p>
+    </div>
+
+    <div class="steps-flow">
+      <article class="step-card reveal">
+        <span class="step-number">01</span>
+        <h3>Elige un diseño</h3>
+        <p>Encuentra el estilo base que mejor se parezca a tu evento.</p>
+      </article>
+      <span class="step-connector" aria-hidden="true">→</span>
+      <article class="step-card reveal">
+        <span class="step-number">02</span>
+        <h3>Selecciona tu plan</h3>
+        <p>Escoge las funciones y el nivel de personalización que necesitas.</p>
+      </article>
+      <span class="step-connector" aria-hidden="true">→</span>
+      <article class="step-card reveal">
+        <span class="step-number">03</span>
+        <h3>Personaliza</h3>
+        <p>Agrega tus textos, colores, lugares, música y fotografías.</p>
+      </article>
+      <span class="step-connector" aria-hidden="true">→</span>
+      <article class="step-card reveal">
+        <span class="step-number">04</span>
+        <h3>Comparte</h3>
+        <p>Recibe tu enlace y empieza a invitar a las personas que quieres.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section section-plans-preview" id="planes">
+  <div class="shell">
+    <div class="section-heading split-heading reveal">
+      <div>
+        <span class="eyebrow">Planes para cada idea</span>
+        <h2>Empieza simple o llévalo mucho más lejos.</h2>
+      </div>
+      <p>Cada nivel suma herramientas y personalización sin perder la facilidad de uso.</p>
+    </div>
+
+    <% if (tiers && tiers.length > 0) { %>
+      <div class="plan-mini-grid">
+        <% tiers.forEach((tier, index) => { %>
+          <article class="plan-mini-card <%= tier.highlighted ? 'featured' : '' %> reveal">
+            <% if (tier.highlighted) { %><span class="plan-badge">Más elegido</span><% } %>
+            <span class="plan-index">0<%= index + 1 %></span>
+            <h3><%= tier.name %></h3>
+            <p><%= tier.short_description %></p>
+            <div class="plan-price"><strong><%= formatPrice(tier) %></strong><span>MXN</span></div>
+            <div class="plan-mini-meta">
+              <span><%= tier.correction_rounds %> rondas de cambios</span>
+              <span><%= tier.features.length %> funciones</span>
+            </div>
+            <a href="/planes#<%= tier.slug %>">Conocer plan <span aria-hidden="true">→</span></a>
+          </article>
+        <% }) %>
+      </div>
+    <% } %>
+
+    <div class="section-action centered">
+      <a class="button button-ghost-dark" href="/planes">Comparar todos los planes</a>
+    </div>
+  </div>
+</section>
+
+<section class="section section-designs-preview">
+  <div class="shell">
+    <div class="section-heading split-heading reveal">
+      <div>
+        <span class="eyebrow">Diseños</span>
+        <h2>Una base bonita. Tu personalidad encima.</h2>
+      </div>
+      <p>Los machotes mantienen una estructura cuidada, pero cada cliente puede llevarlos a su propia temática.</p>
+    </div>
+
+    <% if (templates && templates.length > 0) { %>
+      <div class="design-preview-grid">
+        <% templates.forEach((template, index) => { %>
+          <article class="design-preview-card reveal">
+            <div class="design-preview-visual theme-<%= (index % 3) + 1 %>">
+              <% if (template.preview_image) { %>
+                <img src="<%= template.preview_image %>" alt="Vista previa de <%= template.name %>">
+              <% } else { %>
+                <div class="abstract-invite"><span>XV</span><strong>Nombre</strong><small>15 · 08 · 2026</small></div>
+              <% } %>
+            </div>
+            <div class="design-preview-copy">
+              <div><span><%= template.event_type || 'XV años' %></span><h3><%= template.name %></h3></div>
+              <a href="/catalogo">Ver diseño →</a>
+            </div>
+          </article>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <div class="design-placeholder-row reveal">
+        <div class="design-placeholder theme-1"><div class="abstract-invite"><span>XV</span><strong>Elegante</strong><small>Próximamente</small></div></div>
+        <div class="design-placeholder theme-2"><div class="abstract-invite"><span>XV</span><strong>Romántica</strong><small>Próximamente</small></div></div>
+        <div class="design-placeholder theme-3"><div class="abstract-invite"><span>XV</span><strong>Moderna</strong><small>Próximamente</small></div></div>
+      </div>
+    <% } %>
+
+    <div class="section-action centered">
+      <a class="button button-primary" href="/catalogo">Explorar catálogo <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="final-cta">
+  <div class="shell final-cta-inner reveal">
+    <div>
+      <span class="eyebrow eyebrow-light">Tu momento empieza aquí</span>
+      <h2>Haz que abrir tu invitación también sea parte del recuerdo.</h2>
+    </div>
+    <a class="button button-light" href="/planes">Crear mi invitación <span aria-hidden="true">→</span></a>
+  </div>
+</section>

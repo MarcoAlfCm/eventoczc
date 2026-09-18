@@ -1,0 +1,367 @@
+<%
+  const hero = config.hero || {}
+  const family = config.family || {}
+  const ceremony = config.ceremony || {}
+  const reception = config.reception || {}
+  const dressCode = config.dressCode || {}
+  const rsvp = config.rsvp || {}
+  const parents = Array.isArray(family.parents) ? family.parents : []
+  const godparents = Array.isArray(family.godparents) ? family.godparents : []
+  const gallery = Array.isArray(media.gallery) ? media.gallery.slice(0, 4) : []
+  const colors = Array.isArray(editorColors) ? editorColors : ['#d7a4b0', '#c7a15a', '#fffdfc']
+  const colorCount = Math.min(3, Math.max(1, Number(eventTheme?.colors?.count || colors.length || 3)))
+%>
+
+<div
+  class="event-editor"
+  data-editor-root
+  data-slug="<%= event.slug %>"
+  data-save-url="/mi-evento/<%= encodeURIComponent(event.slug) %>/editar/contenido"
+>
+  <aside class="editor-panel">
+    <header class="editor-panel-header">
+      <div>
+        <span class="editor-kicker">MiEventoCzC</span>
+        <h1>Personaliza tu invitación</h1>
+        <p>Los cambios se guardan automáticamente y se reflejan en la vista previa.</p>
+      </div>
+
+      <div class="editor-save-state" data-save-state>
+        <span></span>
+        <strong>Sin cambios</strong>
+      </div>
+    </header>
+
+    <form class="editor-form" data-editor-form autocomplete="off">
+      <details class="editor-section" open>
+        <summary>
+          <span>01</span>
+          <div>
+            <strong>Portada</strong>
+            <small>Foto, nombre, fecha y mensaje.</small>
+          </div>
+        </summary>
+
+        <div class="editor-section-body">
+          <div class="editor-media-card">
+            <div class="editor-media-preview editor-media-preview-hero">
+              <% if (media.hero) { %>
+                <img src="<%= media.hero.src %>" alt="">
+              <% } else { %>
+                <span>Sin fotografía</span>
+              <% } %>
+            </div>
+            <label class="editor-upload-button">
+              Cambiar foto principal
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/avif"
+                data-media-upload="hero"
+                hidden
+              >
+            </label>
+          </div>
+
+          <label class="editor-field">
+            <span>Texto principal</span>
+            <input
+              type="text"
+              maxlength="150"
+              value="<%= hero.name || 'Mis XV' %>"
+              data-field="hero.name"
+            >
+          </label>
+
+          <label class="editor-field">
+            <span>Etiqueta sobre la foto</span>
+            <input
+              type="text"
+              maxlength="80"
+              value="<%= hero.eyebrow || 'Mis XV años' %>"
+              data-field="hero.eyebrow"
+            >
+          </label>
+
+          <label class="editor-field">
+            <span>Fecha</span>
+            <input
+              type="date"
+              value="<%= event.event_date || '' %>"
+              data-field="eventDate"
+            >
+          </label>
+
+          <label class="editor-field">
+            <span>Mensaje especial</span>
+            <textarea
+              rows="3"
+              maxlength="300"
+              data-field="hero.phrase"
+            ><%= hero.phrase || '' %></textarea>
+          </label>
+        </div>
+      </details>
+
+      <details class="editor-section">
+        <summary>
+          <span>02</span>
+          <div>
+            <strong>Familia</strong>
+            <small>Padres y padrinos.</small>
+          </div>
+        </summary>
+
+        <div class="editor-section-body">
+          <label class="editor-field">
+            <span>Mis padres</span>
+            <textarea
+              rows="3"
+              data-field="family.parents"
+              placeholder="Un nombre por línea"
+            ><%= parents.join('\n') %></textarea>
+            <small>Un nombre por línea.</small>
+          </label>
+
+          <label class="editor-field">
+            <span>Mis padrinos</span>
+            <textarea
+              rows="5"
+              data-field="family.godparents"
+              placeholder="Un nombre por línea"
+            ><%= godparents.join('\n') %></textarea>
+            <small>Un nombre por línea.</small>
+          </label>
+        </div>
+      </details>
+
+      <details class="editor-section">
+        <summary>
+          <span>03</span>
+          <div>
+            <strong>Detalles del evento</strong>
+            <small>Ceremonia, recepción y vestimenta.</small>
+          </div>
+        </summary>
+
+        <div class="editor-section-body">
+          <div class="editor-subsection">
+            <h3>Ceremonia</h3>
+            <label class="editor-field">
+              <span>Lugar</span>
+              <input type="text" value="<%= ceremony.name || '' %>" data-field="ceremony.name">
+            </label>
+            <div class="editor-field-grid">
+              <label class="editor-field">
+                <span>Hora</span>
+                <input type="time" value="<%= ceremony.time || '' %>" data-field="ceremony.time">
+              </label>
+            </div>
+            <label class="editor-field">
+              <span>Dirección</span>
+              <textarea rows="2" data-field="ceremony.address"><%= ceremony.address || '' %></textarea>
+            </label>
+            <label class="editor-field">
+              <span>Enlace de Google Maps</span>
+              <input type="url" value="<%= ceremony.mapsUrl || '' %>" data-field="ceremony.mapsUrl">
+            </label>
+          </div>
+
+          <div class="editor-subsection">
+            <h3>Recepción</h3>
+            <label class="editor-field">
+              <span>Lugar</span>
+              <input type="text" value="<%= reception.name || '' %>" data-field="reception.name">
+            </label>
+            <div class="editor-field-grid">
+              <label class="editor-field">
+                <span>Hora</span>
+                <input type="time" value="<%= reception.time || '' %>" data-field="reception.time">
+              </label>
+            </div>
+            <label class="editor-field">
+              <span>Dirección</span>
+              <textarea rows="2" data-field="reception.address"><%= reception.address || '' %></textarea>
+            </label>
+            <label class="editor-field">
+              <span>Enlace de Google Maps</span>
+              <input type="url" value="<%= reception.mapsUrl || '' %>" data-field="reception.mapsUrl">
+            </label>
+          </div>
+
+          <div class="editor-subsection">
+            <h3>Código de vestimenta</h3>
+            <label class="editor-field">
+              <span>Tipo</span>
+              <input type="text" value="<%= dressCode.title || 'Formal' %>" data-field="dressCode.title">
+            </label>
+            <label class="editor-field">
+              <span>Indicaciones</span>
+              <textarea rows="3" data-field="dressCode.description"><%= dressCode.description || '' %></textarea>
+            </label>
+          </div>
+
+          <div class="editor-subsection">
+            <h3>Confirmación por WhatsApp</h3>
+            <label class="editor-field">
+              <span>Teléfono con lada</span>
+              <input
+                type="tel"
+                value="<%= rsvp.phone || '' %>"
+                placeholder="524421234567"
+                data-field="rsvp.phone"
+              >
+            </label>
+          </div>
+        </div>
+      </details>
+
+      <details class="editor-section">
+        <summary>
+          <span>04</span>
+          <div>
+            <strong>Galería</strong>
+            <small>Hasta 4 fotografías en este plan.</small>
+          </div>
+        </summary>
+
+        <div class="editor-section-body">
+          <div class="editor-gallery-slots">
+            <% for (let index = 0; index < 4; index += 1) { const item = gallery[index] %>
+              <div class="editor-gallery-slot">
+                <% if (item) { %>
+                  <img src="<%= item.src %>" alt="Fotografía <%= index + 1 %>">
+                  <button
+                    type="button"
+                    class="editor-remove-media"
+                    data-media-remove="<%= item.id %>"
+                    aria-label="Quitar fotografía <%= index + 1 %>"
+                  >×</button>
+                <% } else { %>
+                  <span><%= index + 1 %></span>
+                <% } %>
+              </div>
+            <% } %>
+          </div>
+
+          <% if (gallery.length < 4) { %>
+            <label class="editor-upload-button editor-upload-button-secondary">
+              Agregar fotografía
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/avif"
+                data-media-upload="gallery"
+                hidden
+              >
+            </label>
+          <% } %>
+        </div>
+      </details>
+
+      <details class="editor-section" open>
+        <summary>
+          <span>05</span>
+          <div>
+            <strong>Estilo</strong>
+            <small>Colores y tipografías.</small>
+          </div>
+        </summary>
+
+        <div class="editor-section-body">
+          <label class="editor-field">
+            <span>¿Cuántos colores quieres usar?</span>
+            <select data-field="theme.colorCount" data-color-count>
+              <% [1, 2, 3].forEach((count) => { %>
+                <option value="<%= count %>" <%= colorCount === count ? 'selected' : '' %>>
+                  <%= count %> <%= count === 1 ? 'color' : 'colores' %>
+                </option>
+              <% }) %>
+            </select>
+          </label>
+
+          <div class="editor-colors" data-color-fields>
+            <% for (let index = 0; index < 3; index += 1) { %>
+              <label class="editor-color" data-color-index="<%= index %>">
+                <span data-color-label>
+                  <%= colorCount === 3
+                    ? ['Base', 'Principal', 'Acento'][index]
+                    : colorCount === 2
+                      ? ['Principal', 'Acento'][index]
+                      : 'Principal'
+                  %>
+                </span>
+                <div>
+                  <input
+                    type="color"
+                    value="<%= colors[index] || ['#fffdfc', '#d7a4b0', '#c7a15a'][index] %>"
+                    data-color-value="<%= index %>"
+                  >
+                  <code data-color-code><%= colors[index] || ['#fffdfc', '#d7a4b0', '#c7a15a'][index] %></code>
+                </div>
+              </label>
+            <% } %>
+          </div>
+
+          <label class="editor-field">
+            <span>Fuente del nombre / “Mis XV”</span>
+            <select data-field="theme.heroFont">
+              <% Object.entries(heroFontPresets).forEach(([key, item]) => { %>
+                <option
+                  value="<%= key %>"
+                  <%= eventTheme.fonts.hero === key ? 'selected' : '' %>
+                ><%= item.label %></option>
+              <% }) %>
+            </select>
+          </label>
+
+          <label class="editor-field">
+            <span>Tipografía del resto de la invitación</span>
+            <select data-field="theme.fontPreset">
+              <% Object.entries(fontPresets).forEach(([key, item]) => { %>
+                <option
+                  value="<%= key %>"
+                  <%= eventTheme.fonts.preset === key ? 'selected' : '' %>
+                ><%= item.label %></option>
+              <% }) %>
+            </select>
+          </label>
+        </div>
+      </details>
+    </form>
+
+    <footer class="editor-panel-footer">
+      <span><%= event.request_folio || event.slug %></span>
+
+      <div class="editor-footer-actions">
+        <button type="button" class="editor-save-button editor-save-button-secondary" data-save-now>
+          Guardar
+        </button>
+        <button
+          type="button"
+          class="editor-next-button"
+          data-publish-next
+          data-publish-url="/mi-evento/<%= encodeURIComponent(event.slug) %>/publicar"
+        >
+          <%= event.status === 'PUBLISHED' ? 'Ver publicación' : 'Siguiente · Publicar' %>
+        </button>
+      </div>
+    </footer>
+  </aside>
+
+  <section class="editor-preview-pane">
+    <header class="editor-preview-header">
+      <div>
+        <span>Tu invitación</span>
+        <strong><%= event.status === 'PUBLISHED' ? 'PUBLICADA' : 'EDICIÓN' %></strong>
+      </div>
+    </header>
+
+    <div class="editor-device-stage">
+      <iframe
+        class="editor-preview-frame"
+        src="<%= previewUrl %>"
+        title="Vista previa de la invitación"
+        data-preview-frame
+      ></iframe>
+    </div>
+  </section>
+</div>

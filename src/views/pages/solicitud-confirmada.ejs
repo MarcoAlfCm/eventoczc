@@ -1,0 +1,27 @@
+<section class="request-confirmed-section">
+  <div class="shell request-confirmed-shell">
+    <div class="request-confirmed-card reveal">
+      <div class="request-confirmed-mark">✓</div>
+      <span class="eyebrow">Solicitud recibida</span>
+      <h1>Ya tenemos los primeros datos de tu evento.</h1>
+      <p>Guardamos tu solicitud correctamente. El siguiente paso será revisar contigo los detalles y confirmar cómo continuaremos con tu invitación.</p>
+
+      <div class="request-folio">
+        <span>Tu folio</span>
+        <strong><%= request.folio %></strong>
+      </div>
+
+      <div class="request-confirmed-details">
+        <div><span>Festejada/o</span><strong><%= request.celebrant_name || '—' %></strong></div>
+        <div><span>Fecha</span><strong><%= request.desired_date ? new Date(request.desired_date).toLocaleDateString('es-MX', { timeZone: 'UTC', day: '2-digit', month: 'long', year: 'numeric' }) : '—' %></strong></div>
+        <div><span>Plan</span><strong><%= request.tier_name || '—' %></strong></div>
+        <div><span>Diseño</span><strong><%= request.template_name || 'Por definir' %></strong></div>
+      </div>
+
+      <div class="request-confirmed-actions">
+        <a class="button button-primary" href="/">Volver al inicio</a>
+        <a class="button button-ghost" href="/catalogo">Seguir viendo diseños</a>
+      </div>
+    </div>
+  </div>
+</section>
